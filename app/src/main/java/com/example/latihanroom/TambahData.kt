@@ -1,6 +1,7 @@
 package com.example.latihanroom
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -8,6 +9,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.latihanroom.database.daftarBelanja
 import com.example.latihanroom.database.daftarBelanjaDB
 import com.example.latihanroom.helper.DateHelper.getCurrentDate

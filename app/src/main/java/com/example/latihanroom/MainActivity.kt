@@ -1,5 +1,6 @@
 package com.example.latihanroom
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -21,6 +22,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var adapterDaftar: adapterDaftar
     private var arDaftar: MutableList<daftarBelanja> = mutableListOf()
 
+    companion object {
+        private const val ADD_TASK_REQUEST_CODE = 1
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -38,8 +43,13 @@ class MainActivity : AppCompatActivity() {
         _rvDaftar.adapter = adapterDaftar
 
         val _fabAdd = findViewById<FloatingActionButton>(R.id.fabAdd)
+        val _fabRefresh = findViewById<FloatingActionButton>(R.id.fabRefresh)
+
         _fabAdd.setOnClickListener {
             startActivity(Intent(this, TambahData::class.java))
+        }
+
+        _fabRefresh.setOnClickListener {
             CoroutineScope(Dispatchers.Main).async {
                 val daftarBelanja = DB.fundaftarBelanjaDAO().selectAll()
                 Log.d("data ROOM", daftarBelanja.toString())
@@ -67,5 +77,16 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         )
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == ADD_TASK_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            // Refresh RecyclerView data
+            CoroutineScope(Dispatchers.Main).async {
+                val daftarBelanja = DB.fundaftarBelanjaDAO().selectAll()
+                Log.d("data ROOM", daftarBelanja.toString())
+                adapterDaftar.isiData(daftarBelanja)
+            }
+        }
     }
 }
