@@ -1,24 +1,27 @@
 package com.example.latihanroom
 
 import android.content.Intent
+import android.media.Image
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.latihanroom.database.daftarBelanja
 
-class adapterDaftar(private val daftarBelanja: MutableList<daftarBelanja>)
-    : RecyclerView.Adapter<adapterDaftar.ListViewHolder>() {
-        private lateinit var onItemClickCallback : OnItemClickCallback
+class adapterDaftar(private val daftarBelanja: MutableList<daftarBelanja>) :
+    RecyclerView.Adapter<adapterDaftar.ListViewHolder>() {
+    private lateinit var onItemClickCallback: OnItemClickCallback
 
     inner class ListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var _tvTanggal = itemView.findViewById<TextView>(R.id.tvTanggal)
         var _tvItem = itemView.findViewById<TextView>(R.id.tvNama)
         var _tvJumlah = itemView.findViewById<TextView>(R.id.tvJumlah)
-        var _btnEdit = itemView.findViewById<TextView>(R.id.btnEdit)
-        var _btnDelete = itemView.findViewById<TextView>(R.id.btnDelete)
+        var _btnEdit = itemView.findViewById<ImageView>(R.id.btnEdit)
+        var _btnDelete = itemView.findViewById<ImageView>(R.id.btnDelete)
     }
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
