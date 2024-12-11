@@ -19,10 +19,8 @@ import kotlinx.coroutines.async
 
 class TambahData : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        val DB = daftarBelanjaDB.getDatabase(this)
+        val BelanjaDB = daftarBelanjaDB.getDatabaseBelanja(this)
         val tanggal = getCurrentDate()
-        val iID: Int = 0
-        val iAddEdit: Int = 0
 
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -38,9 +36,12 @@ class TambahData : AppCompatActivity() {
         val _etItem = findViewById<EditText>(R.id.etItem)
         val _etJumlah = findViewById<EditText>(R.id.etJumlah)
 
+        val iID: Int = intent.getIntExtra("id", 0)
+        val iAddEdit: Int = intent.getIntExtra("addEdit",0)
+
         _btnTambah.setOnClickListener {
             CoroutineScope(Dispatchers.IO).async {
-                DB.fundaftarBelanjaDAO().insert(
+                BelanjaDB.fundaftarBelanjaDAO().insert(
                     daftarBelanja(
                         tanggal = tanggal,
                         item = _etItem.text.toString(),
@@ -61,7 +62,7 @@ class TambahData : AppCompatActivity() {
             _etItem.isEnabled = false
 
             CoroutineScope(Dispatchers.IO).async {
-                val item = DB.fundaftarBelanjaDAO().getItem(iID)
+                val item = BelanjaDB.fundaftarBelanjaDAO().getItem(iID)
                 _etItem.setText(item.item)
                 _etJumlah.setText(item.jumlah)
             }
@@ -69,7 +70,7 @@ class TambahData : AppCompatActivity() {
 
         _btnUpdate.setOnClickListener {
             CoroutineScope(Dispatchers.IO).async {
-                DB.fundaftarBelanjaDAO().update(
+                BelanjaDB.fundaftarBelanjaDAO().update(
                     isi_tanggal = tanggal,
                     isi_item = _etItem.text.toString(),
                     isi_jumlah = _etJumlah.text.toString(),

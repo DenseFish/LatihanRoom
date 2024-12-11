@@ -11,13 +11,13 @@ abstract class daftarBelanjaDB : RoomDatabase() {
 
     companion object {
         @Volatile
-        private var INSTANCE: daftarBelanjaDB? = null
+        private var INSTANCE_Belanja: daftarBelanjaDB? = null
 
         @JvmStatic
-        fun getDatabase(context: Context): daftarBelanjaDB {
-            if (INSTANCE == null) {
+        fun getDatabaseBelanja(context: Context): daftarBelanjaDB {
+            if (INSTANCE_Belanja == null) {
                 synchronized(daftarBelanjaDB::class.java) {
-                    INSTANCE = Room.databaseBuilder(
+                    INSTANCE_Belanja = Room.databaseBuilder(
                         context.applicationContext,
                         daftarBelanjaDB::class.java, "daftarBelanja_db"
                     )
@@ -25,7 +25,8 @@ abstract class daftarBelanjaDB : RoomDatabase() {
                         .build()
                 }
             }
-            return INSTANCE as daftarBelanjaDB
+            return INSTANCE_Belanja as daftarBelanjaDB
         }
     }
 }
+

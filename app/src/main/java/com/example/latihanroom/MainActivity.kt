@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -18,13 +19,9 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var DB: daftarBelanjaDB
+    private lateinit var BelanjaDB: daftarBelanjaDB
     private lateinit var adapterDaftar: adapterDaftar
     private var arDaftar: MutableList<daftarBelanja> = mutableListOf()
-
-    companion object {
-        private const val ADD_TASK_REQUEST_CODE = 1
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +32,7 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        DB = daftarBelanjaDB.getDatabase(this)
+        BelanjaDB = daftarBelanjaDB.getDatabaseBelanja(this)
 
         adapterDaftar = adapterDaftar(arDaftar)
         val _rvDaftar = findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rvDaftar)
@@ -44,6 +41,7 @@ class MainActivity : AppCompatActivity() {
 
         val _fabAdd = findViewById<FloatingActionButton>(R.id.fabAdd)
         val _fabRefresh = findViewById<FloatingActionButton>(R.id.fabRefresh)
+        val _btnHistory = findViewById<Button>(R.id.btnHistory)
 
         _fabAdd.setOnClickListener {
             startActivity(Intent(this, TambahData::class.java))
@@ -51,25 +49,28 @@ class MainActivity : AppCompatActivity() {
 
         _fabRefresh.setOnClickListener {
             CoroutineScope(Dispatchers.Main).async {
-                val daftarBelanja = DB.fundaftarBelanjaDAO().selectAll()
+                val daftarBelanja = BelanjaDB.fundaftarBelanjaDAO().selectAll()
                 Log.d("data ROOM", daftarBelanja.toString())
                 adapterDaftar.isiData(daftarBelanja)
             }
         }
 
+        _btnHistory.setOnClickListener {
+            startActivity(Intent(this, historyActivity::class.java))
+        }
+
         super.onStart()
         CoroutineScope(Dispatchers.Main).async {
-            val daftarBelanja = DB.fundaftarBelanjaDAO().selectAll()
+            val daftarBelanja = BelanjaDB.fundaftarBelanjaDAO().selectAll()
             Log.d("data ROOM", daftarBelanja.toString())
             adapterDaftar.isiData(daftarBelanja)
         }
-
         adapterDaftar.setOnItemClickCallback(
             object : adapterDaftar.OnItemClickCallback {
                 override fun delData(dtBelanja: daftarBelanja) {
                     CoroutineScope(Dispatchers.IO).async {
-                        DB.fundaftarBelanjaDAO().delete(dtBelanja)
-                        val daftar = DB.fundaftarBelanjaDAO().selectAll()
+                        BelanjaDB.fundaftarBelanjaDAO().delete(dtBelanja)
+                        val daftar = BelanjaDB.fundaftarBelanjaDAO().selectAll()
                         withContext(Dispatchers.Main) {
                             adapterDaftar.isiData(daftar)
                         }
@@ -77,16 +78,5 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         )
-    }
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == ADD_TASK_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            // Refresh RecyclerView data
-            CoroutineScope(Dispatchers.Main).async {
-                val daftarBelanja = DB.fundaftarBelanjaDAO().selectAll()
-                Log.d("data ROOM", daftarBelanja.toString())
-                adapterDaftar.isiData(daftarBelanja)
-            }
-        }
     }
 }

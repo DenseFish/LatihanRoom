@@ -1,7 +1,6 @@
 package com.example.latihanroom
 
 import android.content.Intent
-import android.media.Image
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,13 +18,11 @@ class adapterDaftar(private val daftarBelanja: MutableList<daftarBelanja>) :
         var _tvItem = itemView.findViewById<TextView>(R.id.tvNama)
         var _tvJumlah = itemView.findViewById<TextView>(R.id.tvJumlah)
         var _btnEdit = itemView.findViewById<ImageView>(R.id.btnEdit)
+        var _btnDone = itemView.findViewById<ImageView>(R.id.btnDone)
         var _btnDelete = itemView.findViewById<ImageView>(R.id.btnDelete)
     }
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): adapterDaftar.ListViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): adapterDaftar.ListViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_list, parent, false)
         return ListViewHolder(view)
     }
@@ -47,6 +44,17 @@ class adapterDaftar(private val daftarBelanja: MutableList<daftarBelanja>) :
         holder._btnDelete.setOnClickListener {
             onItemClickCallback.delData(daftar)
         }
+
+        holder._btnDone.setOnClickListener {
+            val intent = Intent(it.context, historyActivity::class.java)
+            intent.putExtra("id", daftar.id)
+            intent.putExtra("item", daftar.item)
+            intent.putExtra("tanggal", daftar.tanggal)
+            intent.putExtra("jumlah", daftar.jumlah)
+            intent.putExtra("move", "true")
+            onItemClickCallback.delData(daftar)
+            it.context.startActivity(intent)
+        }
     }
 
     override fun getItemCount(): Int {
@@ -66,5 +74,4 @@ class adapterDaftar(private val daftarBelanja: MutableList<daftarBelanja>) :
         daftarBelanja.addAll(data)
         notifyDataSetChanged()
     }
-
 }
